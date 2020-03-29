@@ -101,9 +101,9 @@ public class AtivoFinanceiroServiceImpl implements AtivoFinanceiroService {
 		BatchGetValuesResponse readResultCodigosAtivosLista = sheetsService.spreadsheets().values()
 				.batchGet(SPREADSHEET_ID).setRanges(codigosFIIsLista).execute();
 
-		List<String> valoresAtualizadosLista = Arrays.asList("B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10");
+		List<String> codigosAcoesLista = Arrays.asList("B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10");
 		BatchGetValuesResponse readResultValoresAtualizados = sheetsService.spreadsheets().values()
-				.batchGet(SPREADSHEET_ID).setRanges(valoresAtualizadosLista).execute();
+				.batchGet(SPREADSHEET_ID).setRanges(codigosAcoesLista).execute();
 
 		for (int i = 0; i < readResultValoresAtualizados.getValueRanges().size(); i++) {
 			
