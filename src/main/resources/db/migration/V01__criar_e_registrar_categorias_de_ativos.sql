@@ -5,6 +5,6 @@ CREATE TABLE categoria_ativo (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO categoria_ativo(nome, tipo) VALUES ('Ações', 'Renda Variável');
-INSERT INTO categoria_ativo(nome, tipo) VALUES ('FII', 'Renda Variável');
+INSERT INTO categoria_ativo(nome, tipo) VALUES ('Fundos Imobiliários', 'Renda Variável');
 INSERT INTO categoria_ativo(nome, tipo) VALUES ('Tesouro Direto', 'Renda Fixa');
 INSERT INTO categoria_ativo(nome, tipo) VALUES ('ETF', 'Renda Variável');
