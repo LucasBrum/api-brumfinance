@@ -6,6 +6,4 @@ import com.brum.financexp.api.model.Aporte;
 
 public interface AporteRepository extends JpaRepository<Aporte, Long> {
 
-	
-	
 }

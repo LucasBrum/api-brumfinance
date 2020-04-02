@@ -1,5 +1,6 @@
 package com.brum.financexp.api.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -33,7 +34,13 @@ public class AtivoFinanceiro {
 	private String descricao;
 	
 	@Column(name = "preco_atual")
-	private String precoAtual;
+	private BigDecimal precoAtual;
+	
+	@Column(name = "total_dinheiro")
+	private BigDecimal totalDinheiro;
+	
+	@Column(name = "total_porcentagem")
+	private BigDecimal totalPorcentagem;
 	
 	@Column(name = "data_atualizacao")
 	private LocalDate dataAtualizacao;
