@@ -37,6 +37,7 @@ public class AtivoFinanceiroController {
 	private AtivoFinanceiroService ativoFinanceiroService;
 
 	@PostMapping
+	@CrossOrigin(origins = "http://localhost:4200")
 	public ResponseEntity<AtivoFinanceiro> criar(@Valid @RequestBody AtivoFinanceiro ativoFinanceiro,
 			HttpServletResponse response) {
 		AtivoFinanceiro ativoFinanceiroSalvo = ativoFinanceiroRepository.save(ativoFinanceiro);
@@ -44,8 +45,8 @@ public class AtivoFinanceiroController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(ativoFinanceiroSalvo);
 	}
 	
-	@CrossOrigin(origins = "http://localhost:4200")
 	@GetMapping
+	@CrossOrigin(origins = "http://localhost:4200")
 	public List<AtivoFinanceiro> listar() {
 		return ativoFinanceiroRepository.findAll();
 	}
