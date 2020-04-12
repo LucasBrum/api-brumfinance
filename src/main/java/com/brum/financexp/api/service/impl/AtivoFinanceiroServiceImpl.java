@@ -14,13 +14,16 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.brum.financexp.api.data.AtivoFinanceiroSpecification;
 import com.brum.financexp.api.model.AtivoFinanceiro;
 import com.brum.financexp.api.repository.AtivoFinanceiroRepository;
 import com.brum.financexp.api.service.AtivoFinanceiroService;
 import com.brum.financexp.api.util.google.SheetsServiceUtil;
-import com.brum.financexp.api.vo.PapelFinanceiroVO;
+import com.brum.financexp.api.vo.AtivoFinanceiroRequestVO;
+import com.brum.financexp.api.vo.AtivoFinanceiroVO;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.BatchGetValuesResponse;
@@ -83,7 +86,7 @@ public class AtivoFinanceiroServiceImpl implements AtivoFinanceiroService {
 			sb.append(str);
 		}
 		
-		PapelFinanceiroVO papelFinanceiroVO = xmlMapper.readValue(sb.toString(), PapelFinanceiroVO.class);
+		AtivoFinanceiroVO papelFinanceiroVO = xmlMapper.readValue(sb.toString(), AtivoFinanceiroVO.class);
 		
 		System.out.println("Papel Financeiro VO: " + papelFinanceiroVO.getNome());
 		
@@ -124,6 +127,13 @@ public class AtivoFinanceiroServiceImpl implements AtivoFinanceiroService {
 		
 		return fiiHashMap;
 		
+	}
+
+	@Override
+	public List<AtivoFinanceiro> pesquisar(AtivoFinanceiroRequestVO ativoFinanceiroRequestVO) {
+		Specification<AtivoFinanceiro> filter = AtivoFinanceiroSpecification.byFilter(ativoFinanceiroRequestVO);
+		
+		return this.ativoFinanceiroRepository.findAll(filter);
 	}
 	
 }

@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.brum.financexp.api.model.AtivoFinanceiro;
 import com.brum.financexp.api.repository.AtivoFinanceiroRepository;
 import com.brum.financexp.api.service.AtivoFinanceiroService;
+import com.brum.financexp.api.vo.AtivoFinanceiroRequestVO;
 
 @RestController
 @RequestMapping("/ativos")
@@ -49,8 +52,8 @@ public class AtivoFinanceiroController {
 	
 	@GetMapping
 	@CrossOrigin(origins = "http://localhost:4200")
-	public List<AtivoFinanceiro> listar() {
-		return ativoFinanceiroRepository.findAll();
+	public Page<AtivoFinanceiro> listar(Pageable pageable) {
+		return ativoFinanceiroRepository.findAll(pageable);
 	}
 	
 	@GetMapping("/preco-atual")
@@ -94,6 +97,16 @@ public class AtivoFinanceiroController {
 	@CrossOrigin(origins = "http://localhost:4200")
 	public void remover(@PathVariable Long id) {
 		ativoFinanceiroRepository.deleteById(id);
+	}
+	
+	@PostMapping("/pesquisar")
+	@CrossOrigin(origins = "http://localhost:4200")
+	public ResponseEntity<List<AtivoFinanceiro>> pesquisarAtivos(@RequestBody AtivoFinanceiroRequestVO filter) {
+		
+		List<AtivoFinanceiro> ativoFinanceiroList = ativoFinanceiroService.pesquisar(filter);
+		
+		return new ResponseEntity<>(ativoFinanceiroList, HttpStatus.OK);
+		
 	}
 	
 	

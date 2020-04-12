@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PapelFinanceiroVO {
+public class AtivoFinanceiroVO {
 
 	private String codigo;
 	private String nome;
