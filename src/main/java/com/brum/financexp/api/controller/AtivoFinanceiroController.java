@@ -78,6 +78,7 @@ public class AtivoFinanceiroController {
 	}
 
 	@PutMapping
+	@CrossOrigin(origins = "http://localhost:4200")
 	public String atualizarAtivos() {
 		List<AtivoFinanceiro> ativosFinanceirosLista = ativoFinanceiroRepository.findAll();
 

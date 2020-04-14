@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 
 import com.brum.financexp.api.util.Messages;
 import com.brum.financexp.api.util.ServiceException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -22,134 +20,132 @@ import lombok.extern.log4j.Log4j2;
 @Component
 public class AspectConfig {
 
-    private static final String METODO_ID = "method";
-    private static final String EXECUTANDO_MSG = "executando";
-    private static final String ERRO_AO_EXECUTAR_MSG = "erro ao executar - campo: {}, status: {} ";
-    private static final String FIM_DE_EXECUÇÃO_MSG = "fim de execução - duração de: ";
+	 private static final String METODO_ID = "method";
+	    private static final String EXECUTANDO_MSG = "executando";
+	    private static final String ERRO_AO_EXECUTAR_MSG = "erro ao executar - campo: {}, status: {} ";
+	    private static final String FIM_DE_EXECUÇÃO_MSG = "fim de execução - duração de: ";
 
-    @Autowired
-    private Messages messages;
+	    @Autowired
+	    private Messages messages;
 
-    private ObjectMapper objectMapper;
+	    public AspectConfig() {
 
-    public AspectConfig() {
-        this.objectMapper = new ObjectMapper();
-    }
+	    }
 
-    @Around("@annotation(com.brum.financexp.api.config.LogExecutionTime)")
-    public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+	    @Around("@annotation(com.brum.financexp.api.config.LogExecutionTime)")
+	    public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        return aroundJoinPoint(joinPoint);
-    }
+	        return aroundJoinPoint(joinPoint);
+	    }
 
-    @Around("execution(* com.brum.financexp.api.service..*.*(..))")
-    public Object aroundService(ProceedingJoinPoint joinPoint) throws Throwable {
+	    @Around("execution(* com.brum.financexp.api.service..*.*(..))")
+	    public Object aroundService(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        return aroundJoinPoint(joinPoint);
-    }
+	        return aroundJoinPoint(joinPoint);
+	    }
 
-    @Before("execution(* com.brum.financexp.api.controller..*.*(..))")
-    public void beforeController(JoinPoint joinPoint) {
+	    @Before("execution(* com.brum.financexp.api.controller..*.*(..))")
+	    public void beforeController(JoinPoint joinPoint) {
 
-        beforeJoinPoint(joinPoint);
-    }
+	        beforeJoinPoint(joinPoint);
+	    }
 
-    @Before("execution(* com.brum.financexp.api.service..*.*(..))")
-    public void beforeService(JoinPoint joinPoint) {
+	    @Before("execution(* com.brum.financexp.api.service..*.*(..))")
+	    public void beforeService(JoinPoint joinPoint) {
 
-        beforeJoinPoint(joinPoint);
-    }
+	        beforeJoinPoint(joinPoint);
+	    }
 
-    @After("execution(* com.brum.financexp.api.controller..*.*(..))")
-    public void afterController(JoinPoint joinPoint) {
+	    @After("execution(* com.brum.financexp.api.controller..*.*(..))")
+	    public void afterController(JoinPoint joinPoint) {
 
-        this.setMethodName("");
-    }
+	        this.setMethodName("");
+	    }
 
-    private Object aroundJoinPoint(ProceedingJoinPoint joinPoint) throws Throwable {
+	    private Object aroundJoinPoint(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        long start = System.currentTimeMillis();
+	        long start = System.currentTimeMillis();
 
-        Object proceed;
+	        Object proceed;
 
-        try {
+	        try {
 
-            proceed = joinPoint.proceed();
+	            proceed = joinPoint.proceed();
 
-        } catch (ServiceException svcEx) {
+	        } catch (ServiceException svcEx) {
 
-            logServiceException(svcEx);
+	            logServiceException(svcEx);
 
-            throw svcEx;
-        }
+	            throw svcEx;
+	        }
 
-        this.setMethodName(getMethodName(joinPoint));
+	        this.setMethodName(getMethodName(joinPoint));
 
-        log.info(FIM_DE_EXECUÇÃO_MSG + (System.currentTimeMillis() - start) + "ms");
+	        log.info(FIM_DE_EXECUÇÃO_MSG + (System.currentTimeMillis() - start) + "ms");
 
-        return proceed;
-    }
+	        return proceed;
+	    }
 
-    private void beforeJoinPoint(JoinPoint joinPoint) {
+	    private void beforeJoinPoint(JoinPoint joinPoint) {
 
-        this.setMethodName(getMethodName(joinPoint));
+	        this.setMethodName(getMethodName(joinPoint));
 
-        this.logJoinPoint(joinPoint.getArgs());
-    }
+	        this.logJoinPoint(joinPoint.getArgs());
+	    }
 
-    private void logJoinPoint(Object[] joinPointArgs) {
+	    private void logJoinPoint(Object[] joinPointArgs) {
 
-        if (joinPointArgs.length == 0) {
+	        if (joinPointArgs.length == 0) {
 
-            log.info(EXECUTANDO_MSG);
+	            log.info(EXECUTANDO_MSG);
 
-        } else {
+	        } else {
 
-            String args = "#";
+	            String args = "#";
 
-            for (Object arg : joinPointArgs) {
+	            for (Object arg : joinPointArgs) {
 
-                args += ", " + arg.getClass().getSimpleName() + ":" + getArgJson(arg);
-            }
+	                args += ", " + arg.getClass().getSimpleName() + ":" + getValueOfRequest(arg);
+	            }
 
-            log.info(EXECUTANDO_MSG + " - " + args.replace("#, ", ""));
-        }
-    }
+	            log.info(EXECUTANDO_MSG + " - " + args.replace("#, ", ""));
+	        }
+	    }
 
-    private void logServiceException(ServiceException ex) {
+	    private void logServiceException(ServiceException ex) {
 
-        String message = messages.get(ex.getChave());
+	        String message = messages.get(ex.getChave());
 
-        if (message == null) {
+	        if (message == null) {
 
-            log.info(ERRO_AO_EXECUTAR_MSG + ", chave: {}, ", ex.getCampo(), ex.getStatus(), ex.getChave());
+	            log.info(ERRO_AO_EXECUTAR_MSG + ", chave: {}, ", ex.getCampo(), ex.getStatus(), ex.getChave());
 
-        } else {
+	        } else {
 
-            log.info(ERRO_AO_EXECUTAR_MSG + ", message: {}", ex.getCampo(), ex.getStatus(), message);
-        }
-    }
+	            log.info(ERRO_AO_EXECUTAR_MSG + ", message: {}", ex.getCampo(), ex.getStatus(), message);
+	        }
+	    }
 
-    private String getMethodName(JoinPoint joinPoint) {
-        return joinPoint.getSignature().toShortString().replace(joinPoint.getArgs().length > 0 ? "(..)" : "()", "");
-    }
+	    private String getMethodName(JoinPoint joinPoint) {
+	        return joinPoint.getSignature().toShortString().replace(joinPoint.getArgs().length > 0 ? "(..)" : "()", "");
+	    }
 
-    private void setMethodName(String metodo) {
+	    private void setMethodName(String metodo) {
 
-        MDC.put(METODO_ID, metodo + " ");
-    }
+	        MDC.put(METODO_ID, metodo + " ");
+	    }
 
-    private String getArgJson(Object value) {
+	    private String getValueOfRequest(Object value) {
 
-        if(value == null) return "";
+	        if(value == null) return "";
 
-        try {
+	        try {
 
-            return this.objectMapper.writeValueAsString(value);
+	            return value.toString();
 
-        } catch (JsonProcessingException e) {
+	        } catch (Exception e) {
 
-            return "erro ao obter json do argumento";
-        }
-    }
+	            return "erro ao obter json do argumento";
+	        }
+	    }
 }
