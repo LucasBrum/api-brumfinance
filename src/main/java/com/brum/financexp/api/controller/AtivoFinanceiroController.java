@@ -100,8 +100,11 @@ public class AtivoFinanceiroController {
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@CrossOrigin(origins = "http://localhost:4200")
-	public void remover(@PathVariable Long id) {
+	public void excluir(@PathVariable Long id) {
 		ativoFinanceiroRepository.deleteById(id);
+		
+		log.info("Ativo financeiro excluído com sucesso. Id do Ativo: {}", id);
+		
 	}
 
 	@PostMapping("/pesquisar")
