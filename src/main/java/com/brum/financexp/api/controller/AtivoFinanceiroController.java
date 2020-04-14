@@ -31,6 +31,9 @@ import com.brum.financexp.api.repository.AtivoFinanceiroRepository;
 import com.brum.financexp.api.service.AtivoFinanceiroService;
 import com.brum.financexp.api.vo.AtivoFinanceiroRequestVO;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @RestController
 @RequestMapping("/ativos")
 public class AtivoFinanceiroController {
@@ -47,20 +50,23 @@ public class AtivoFinanceiroController {
 			HttpServletResponse response) {
 		AtivoFinanceiro ativoFinanceiroSalvo = ativoFinanceiroRepository.save(ativoFinanceiro);
 
+		log.info("Ativo Financeiro cadastrado com sucesso. Nome do Ativo: {}", ativoFinanceiroSalvo.getNome());
 		return ResponseEntity.status(HttpStatus.CREATED).body(ativoFinanceiroSalvo);
 	}
-	
+
 	@GetMapping
 	@CrossOrigin(origins = "http://localhost:4200")
 	public Page<AtivoFinanceiro> listar(Pageable pageable) {
+
+		log.info("Listando todos os ativos financeiros existentes no sistema.");
 		return ativoFinanceiroRepository.findAll(pageable);
 	}
-	
+
 	@GetMapping("/preco-atual")
 	public HashMap<String, BigDecimal> buscaPrecoAtualDosAtivos() throws IOException, GeneralSecurityException {
-		
+
 		HashMap<String, BigDecimal> ativos = ativoFinanceiroService.atualizarAtivosViaGoogleSheets();
-		
+
 		return ativos;
 	}
 
@@ -68,8 +74,7 @@ public class AtivoFinanceiroController {
 	public ResponseEntity<AtivoFinanceiro> findById(@PathVariable Long id) {
 		Optional<AtivoFinanceiro> ativoFinanceiro = ativoFinanceiroRepository.findById(id);
 
-		return ativoFinanceiro.isPresent() ? ResponseEntity.ok(ativoFinanceiro.get())
-				: ResponseEntity.notFound().build();
+		return ativoFinanceiro.isPresent() ? ResponseEntity.ok(ativoFinanceiro.get()): ResponseEntity.notFound().build();
 	}
 
 	@PutMapping
@@ -86,29 +91,27 @@ public class AtivoFinanceiroController {
 		return null;
 
 	}
-	
+
 	@PutMapping("/google-sheets")
 	public void atualizarAtivosViaGoogleSheets() {
-		
+
 	}
-	
+
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@CrossOrigin(origins = "http://localhost:4200")
 	public void remover(@PathVariable Long id) {
 		ativoFinanceiroRepository.deleteById(id);
 	}
-	
+
 	@PostMapping("/pesquisar")
 	@CrossOrigin(origins = "http://localhost:4200")
 	public ResponseEntity<List<AtivoFinanceiro>> pesquisarAtivos(@RequestBody AtivoFinanceiroRequestVO filter) {
-		
+
 		List<AtivoFinanceiro> ativoFinanceiroList = ativoFinanceiroService.pesquisar(filter);
-		
+
 		return new ResponseEntity<>(ativoFinanceiroList, HttpStatus.OK);
-		
+
 	}
-	
-	
 
 }
