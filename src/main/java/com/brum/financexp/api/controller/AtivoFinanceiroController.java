@@ -12,7 +12,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -57,6 +59,8 @@ public class AtivoFinanceiroController {
 	@GetMapping
 	@CrossOrigin(origins = "http://localhost:4200")
 	public Page<AtivoFinanceiro> listar(Pageable pageable) {
+				
+		pageable = PageRequest.of(0, 20, Sort.by("codigo").ascending());
 
 		log.info("Listando todos os ativos financeiros existentes no sistema.");
 		return ativoFinanceiroRepository.findAll(pageable);
