@@ -65,6 +65,14 @@ public class AtivoFinanceiroController {
 		log.info("Listando todos os ativos financeiros existentes no sistema.");
 		return ativoFinanceiroRepository.findAll(pageable);
 	}
+	
+	@GetMapping("/listar")
+	@CrossOrigin(origins = "http://localhost:4200")
+	public List<AtivoFinanceiro> listarAtivos(Pageable pageable) {
+				
+		log.info("Listando todos os ativos financeiros existentes no sistema.");
+		return ativoFinanceiroRepository.findByOrderByCodigoAsc();
+	}
 
 	@GetMapping("/preco-atual")
 	public HashMap<String, BigDecimal> buscaPrecoAtualDosAtivos() throws IOException, GeneralSecurityException {

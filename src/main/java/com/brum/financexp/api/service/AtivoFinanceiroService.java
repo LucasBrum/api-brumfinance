@@ -14,7 +14,7 @@ public interface AtivoFinanceiroService {
 
 	Optional<AtivoFinanceiro> findById(Long id);
 
-	void atualizarQuantidadeAtivo(Long id, AtivoFinanceiro ativoFinanceiro);
+	void atualizarAtivoFinanceiro(Long id, AtivoFinanceiro ativoFinanceiro);
 	HashMap<String, BigDecimal> atualizarAtivosViaGoogleSheets() throws IOException, GeneralSecurityException;
 	
 	String getInformacoesAtivoFromBovespaWebService(List<AtivoFinanceiro> ativosFinanceiros) throws IOException;

@@ -49,7 +49,7 @@ public class AtivoFinanceiroServiceImpl implements AtivoFinanceiroService {
 	}
 
 	@Override
-	public void atualizarQuantidadeAtivo(Long id, AtivoFinanceiro ativoFinanceiro) {
+	public void atualizarAtivoFinanceiro(Long id, AtivoFinanceiro ativoFinanceiro) {
 		AtivoFinanceiro ativoFinanceiroEncontrado = ativoFinanceiroRepository.findById(id)
 				.orElseThrow(() -> new EmptyResultDataAccessException(1));
 		

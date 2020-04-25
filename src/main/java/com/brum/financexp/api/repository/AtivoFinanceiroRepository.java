@@ -1,5 +1,7 @@
 package com.brum.financexp.api.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -9,4 +11,6 @@ public interface AtivoFinanceiroRepository extends JpaRepository<AtivoFinanceiro
 
 	//TODO: Criar metodo que irá fazer update na base com os precos e datas atualizados
 	//void updatePrecoAtualAtivos();
+	
+	List<AtivoFinanceiro> findByOrderByCodigoAsc();
 }

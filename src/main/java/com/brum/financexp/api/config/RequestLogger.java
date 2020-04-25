@@ -40,7 +40,7 @@ public class RequestLogger implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
         MDC.put(REQUEST_IP, RequestUtil.getClientIp() + " ");
-        MDC.put(REQUEST_ID, UUID.randomUUID().toString().toUpperCase().replace("-", "") + " ");
+        MDC.put(REQUEST_ID, UUID.randomUUID().toString().toUpperCase().replace("-", "") + "");
 
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode headers = objectMapper.createObjectNode();
