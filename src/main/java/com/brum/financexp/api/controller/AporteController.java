@@ -1,7 +1,6 @@
 package com.brum.financexp.api.controller;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -73,6 +72,7 @@ public class AporteController {
 	public Page<Aporte> listar(Pageable pageable) {
 		return aporteRepository.findAll(pageable);
 	}
+	
 	
 	private void atualizaTotalInvestidoNoAtivo(Aporte aporte, Optional<AtivoFinanceiro> ativoFinanceiro, BigDecimal valorJaInvestido) {
 		BigDecimal valorTotalDoAporte = aporteService.calculaValorTotalDoAporte(aporte.getCusto(), aporte.getQuantidade());

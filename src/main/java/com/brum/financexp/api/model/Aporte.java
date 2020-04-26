@@ -32,7 +32,6 @@ public class Aporte {
 	
 	@NotNull
 	@Column(name = "data_compra")
-	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataCompra;
 	
 	@NotNull
