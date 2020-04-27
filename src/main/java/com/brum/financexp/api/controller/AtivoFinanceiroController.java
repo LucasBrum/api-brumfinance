@@ -60,8 +60,6 @@ public class AtivoFinanceiroController {
 	@CrossOrigin(origins = "http://localhost:4200")
 	public Page<AtivoFinanceiro> listar(Pageable pageable) {
 				
-		//pageable = PageRequest.of(0, 20, Sort.by("codigo").ascending());
-
 		log.info("Listando Ativos Financeiros.");
 		return ativoFinanceiroRepository.findByOrderByCodigoAsc(pageable);
 	}

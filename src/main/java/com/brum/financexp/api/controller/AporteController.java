@@ -79,11 +79,9 @@ public class AporteController {
 	@CrossOrigin(origins = "http://localhost:4200")
 	public Page<Aporte> listar(Pageable pageable) {
 		
-		pageable = PageRequest.of(0, 20, Sort.by("dataCompra").descending());
-		
 		log.info("Listando Aportes.");
 		
-		return aporteRepository.findAll(pageable);
+		return aporteRepository.findByOrderByDataCompraDesc(pageable);
 	}
 	
 	@DeleteMapping("/{id}")
