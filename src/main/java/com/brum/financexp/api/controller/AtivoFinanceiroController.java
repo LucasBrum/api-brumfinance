@@ -60,15 +60,15 @@ public class AtivoFinanceiroController {
 	@CrossOrigin(origins = "http://localhost:4200")
 	public Page<AtivoFinanceiro> listar(Pageable pageable) {
 				
-		pageable = PageRequest.of(0, 20, Sort.by("codigo").ascending());
+		//pageable = PageRequest.of(0, 20, Sort.by("codigo").ascending());
 
 		log.info("Listando Ativos Financeiros.");
-		return ativoFinanceiroRepository.findAll(pageable);
+		return ativoFinanceiroRepository.findByOrderByCodigoAsc(pageable);
 	}
 	
 	@GetMapping("/listar")
 	@CrossOrigin(origins = "http://localhost:4200")
-	public List<AtivoFinanceiro> listarAtivos(Pageable pageable) {
+	public List<AtivoFinanceiro> listarAtivos() {
 				
 		log.info("Listando todos os ativos financeiros existentes no sistema.");
 		return ativoFinanceiroRepository.findByOrderByCodigoAsc();
