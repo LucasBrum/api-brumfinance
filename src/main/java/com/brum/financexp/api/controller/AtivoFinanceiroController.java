@@ -62,7 +62,7 @@ public class AtivoFinanceiroController {
 				
 		pageable = PageRequest.of(0, 20, Sort.by("codigo").ascending());
 
-		log.info("Listando todos os ativos financeiros existentes no sistema.");
+		log.info("Listando Ativos Financeiros.");
 		return ativoFinanceiroRepository.findAll(pageable);
 	}
 	

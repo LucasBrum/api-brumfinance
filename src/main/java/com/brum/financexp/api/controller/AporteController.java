@@ -8,7 +8,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +26,9 @@ import com.brum.financexp.api.repository.AporteRepository;
 import com.brum.financexp.api.service.AporteService;
 import com.brum.financexp.api.service.AtivoFinanceiroService;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @RestController
 @RequestMapping("/aportes")
 public class AporteController {
@@ -70,6 +75,11 @@ public class AporteController {
 	@GetMapping
 	@CrossOrigin(origins = "http://localhost:4200")
 	public Page<Aporte> listar(Pageable pageable) {
+		
+		pageable = PageRequest.of(0, 20, Sort.by("dataCompra").descending());
+		
+		log.info("Listando Aportes.");
+		
 		return aporteRepository.findAll(pageable);
 	}
 	
