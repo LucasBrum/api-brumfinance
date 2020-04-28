@@ -1,8 +1,5 @@
 package com.brum.financexp.api.controller;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -42,19 +39,14 @@ public class VendaController {
 	@CrossOrigin(origins = "http://localhost:4200")
 	public ResponseEntity<Venda> criar(@Valid @RequestBody Venda venda, HttpServletResponse response) {
 
-		BigDecimal lucroPorAcao = venda.getPrecoVenda().subtract(venda.getPrecoCompra());
-		BigDecimal lucroTotal = lucroPorAcao.multiply(new BigDecimal(venda.getQuantidade()));
-		
-		BigDecimal totalInvestido = venda.getPrecoCompra().multiply(new BigDecimal(venda.getQuantidade()));
-		BigDecimal porcentagem = lucroTotal.divide(totalInvestido, 3).multiply(new BigDecimal(100));
-	
-		venda.setLucro(lucroTotal);
-		venda.setPorcentagem(porcentagem);
+		vendaService.calcularValores(venda);
 		
 		Venda vendaSalva = vendaRepository.save(venda);
 		log.info("Venda de Ativo {} efetuada com sucesso.", venda.getAtivo());
 		return ResponseEntity.status(HttpStatus.CREATED).body(vendaSalva);
 	}
+
+	
 	
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)

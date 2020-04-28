@@ -36,86 +36,59 @@ public class AporteController {
 
 	@Autowired
 	private AporteService aporteService;
-	
+
 	@Autowired
 	private AporteRepository aporteRepository;
-	
+
 	@Autowired
 	private AtivoFinanceiroService ativoFinanceiroService;
-	
+
 	private String buscaPrecoAtualDoAtivo(String codigoAtivo) throws Exception {
 		String valorAcao = aporteService.buscaInformacoesSobreAtivoNoWebService();
 
 		return valorAcao;
 	}
-	
+
 	@PostMapping
 	@CrossOrigin(origins = "http://localhost:4200")
 	public ResponseEntity<Aporte> criar(@Valid @RequestBody Aporte aporte, HttpServletResponse response) {
-		
-		Optional<AtivoFinanceiro> ativoFinanceiro = ativoFinanceiroService.findById(aporte.getAtivoFinanceiro().getId());
-		
-		if(ativoFinanceiro.isPresent()) {
-			
-			BigDecimal valorJaInvestido = getValorJaInvestidoNoAtivo(ativoFinanceiro);
-			
-			atualizaQuantidadeAtivo(aporte, ativoFinanceiro);
 
-			atualizaTotalInvestidoNoAtivo(aporte, ativoFinanceiro, valorJaInvestido);
-			
+		Optional<AtivoFinanceiro> ativoFinanceiro = ativoFinanceiroService
+				.findById(aporte.getAtivoFinanceiro().getId());
+
+		if (ativoFinanceiro.isPresent()) {
+
+			BigDecimal valorJaInvestido = aporteService.getValorJaInvestidoNoAtivo(ativoFinanceiro);
+			aporteService.atualizaQuantidadeDoAtivo(aporte, ativoFinanceiro);
+			aporteService.atualizaTotalInvestidoNoAtivo(aporte, ativoFinanceiro, valorJaInvestido);
+
 			ativoFinanceiroService.atualizarAtivoFinanceiro(aporte.getAtivoFinanceiro().getId(), ativoFinanceiro.get());
-			
+
 		}
-		
+
 		Aporte aporteSalvo = aporteRepository.save(aporte);
-		
+
 		return ResponseEntity.status(HttpStatus.CREATED).body(aporteSalvo);
-		
+
 	}
 
 	@GetMapping
 	@CrossOrigin(origins = "http://localhost:4200")
 	public Page<Aporte> listar(Pageable pageable) {
-		
+
 		log.info("Listando Aportes.");
-		
+
 		return aporteRepository.findByOrderByDataCompraDesc(pageable);
 	}
-	
+
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@CrossOrigin(origins = "http://localhost:4200")
 	public void excluir(@PathVariable Long id) {
 		aporteRepository.deleteById(id);
-		
+
 		log.info("Aporte excluído com sucesso.");
 
 	}
-	
-	
-	private void atualizaTotalInvestidoNoAtivo(Aporte aporte, Optional<AtivoFinanceiro> ativoFinanceiro, BigDecimal valorJaInvestido) {
-		BigDecimal valorTotalDoAporte = aporteService.calculaValorTotalDoAporte(aporte.getCusto(), aporte.getQuantidade());
-		aporte.setValorTotal(valorTotalDoAporte);
-
-		BigDecimal valorInvestidoAtualizado = valorJaInvestido.add(valorTotalDoAporte);
-		
-		ativoFinanceiro.get().setTotalDinheiro(valorInvestidoAtualizado);
-	}
-
-	private void atualizaQuantidadeAtivo(Aporte aporte, Optional<AtivoFinanceiro> ativoFinanceiro) {
-		Integer quantidadeDoAtivo = ativoFinanceiro.get().getQuantidade();
-		quantidadeDoAtivo = quantidadeDoAtivo + aporte.getQuantidade();
-		ativoFinanceiro.get().setQuantidade(quantidadeDoAtivo);
-	}
-
-	private BigDecimal getValorJaInvestidoNoAtivo(Optional<AtivoFinanceiro> ativoFinanceiro) {
-		BigDecimal valorJaInvestido = ativoFinanceiro.get().getTotalDinheiro();
-		
-		if(valorJaInvestido == null) {
-			valorJaInvestido = BigDecimal.ZERO;
-		}
-		return valorJaInvestido;
-	}
-	
 
 }
