@@ -31,7 +31,6 @@ public class Venda {
 	private LocalDate dataVenda;
 	
 	@NotNull
-	@Column(name = "ativo")
 	private String ativo;
 	
 	@NotNull
@@ -45,9 +44,7 @@ public class Venda {
 	@Column(name = "preco_venda")
 	private BigDecimal precoVenda;
 	
-	@NotNull
 	private BigDecimal lucro;
 	
-	@NotNull
 	private BigDecimal porcentagem;
 }
