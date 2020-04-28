@@ -8,8 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -19,31 +17,37 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "aporte")
+@Table(name = "venda")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Aporte {
-	
+public class Venda {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@NotNull
-	@Column(name = "data_compra")
-	private LocalDate dataCompra;
+	@Column(name = "data_venda")
+	private LocalDate dataVenda;
 	
 	@NotNull
-	@OneToOne
-	@JoinColumn(name = "id_ativo_financeiro")
-	private AtivoFinanceiro ativoFinanceiro;
+	@Column(name = "ativo")
+	private String ativo;
 	
 	@NotNull
 	private Integer quantidade;
 	
 	@NotNull
-	private BigDecimal custo;
+	@Column(name = "preco_compra")
+	private BigDecimal precoCompra;
 	
-	@Column(name = "valor_total")
-	private BigDecimal valorTotal;
+	@NotNull
+	@Column(name = "preco_venda")
+	private BigDecimal precoVenda;
 	
+	@NotNull
+	private BigDecimal lucro;
+	
+	@NotNull
+	private BigDecimal porcentagem;
 }
