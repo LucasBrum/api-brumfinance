@@ -48,6 +48,7 @@ public class AtivoFinanceiroController {
 	@CrossOrigin(origins = "http://localhost:4200")
 	public ResponseEntity<AtivoFinanceiro> criar(@Valid @RequestBody AtivoFinanceiro ativoFinanceiro,
 			HttpServletResponse response) {
+		
 		AtivoFinanceiro ativoFinanceiroSalvo = ativoFinanceiroRepository.save(ativoFinanceiro);
 
 		log.info("Ativo Financeiro cadastrado com sucesso. Nome do Ativo: {}", ativoFinanceiroSalvo.getNome());
