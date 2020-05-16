@@ -14,10 +14,11 @@ public interface AtivoFinanceiroService {
 
 	Optional<AtivoFinanceiro> findById(Long id);
 
-	void atualizarAtivoFinanceiro(Long id, AtivoFinanceiro ativoFinanceiro);
+	AtivoFinanceiro atualizarAtivoFinanceiro(Long id, AtivoFinanceiro ativoFinanceiro);
 	HashMap<String, BigDecimal> atualizarAtivosViaGoogleSheets() throws IOException, GeneralSecurityException;
 	
 	String getInformacoesAtivoFromBovespaWebService(List<AtivoFinanceiro> ativosFinanceiros) throws IOException;
 
 	List<AtivoFinanceiro> pesquisar(AtivoFinanceiroRequestVO filter);
+	List<AtivoFinanceiro> getListaComCotacaoAtualDosAtivos(List<AtivoFinanceiro> ativosFinanceiros) throws IOException;
 }

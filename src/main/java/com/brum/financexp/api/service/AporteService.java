@@ -10,8 +10,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 public interface AporteService {
 
-	String buscaInformacoesSobreAtivoNoWebService() throws JsonProcessingException, JsonMappingException;
-
 	BigDecimal calculaValorTotalDoAporte(BigDecimal custo, Integer quantidade);
 	BigDecimal getValorJaInvestidoNoAtivo(Optional<AtivoFinanceiro> ativoFinanceiro);
 	

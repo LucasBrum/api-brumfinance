@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
@@ -11,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -33,63 +36,61 @@ public class AtivoFinanceiroServiceImpl implements AtivoFinanceiroService {
 
 	private static final String SPREADSHEET_ID = "1FUpj4vi4N2s2xMPP1Q3GZTyUQUVd-QIScqb0XFxZONQ";
 	private static final String PIPE_SEPARATOR = "|";
-	
+
 	@Autowired
 	private AtivoFinanceiroRepository ativoFinanceiroRepository;
-	
+
 	private static Sheets sheetsService;
-	
+
 	@Override
 	public Optional<AtivoFinanceiro> findById(Long id) {
 		Optional<AtivoFinanceiro> ativoFinanceiro = ativoFinanceiroRepository.findById(id);
-		if(ativoFinanceiro.isPresent()) {
-			
+		if (ativoFinanceiro.isPresent()) {
+
 		}
 		return ativoFinanceiro;
 	}
 
 	@Override
-	public void atualizarAtivoFinanceiro(Long id, AtivoFinanceiro ativoFinanceiro) {
+	public AtivoFinanceiro atualizarAtivoFinanceiro(Long id, AtivoFinanceiro ativoFinanceiro) {
 		AtivoFinanceiro ativoFinanceiroEncontrado = ativoFinanceiroRepository.findById(id)
 				.orElseThrow(() -> new EmptyResultDataAccessException(1));
-		
-		BeanUtils.copyProperties(ativoFinanceiroEncontrado, ativoFinanceiro );
-		
-		ativoFinanceiroRepository.save(ativoFinanceiroEncontrado);
-		
+
+		BeanUtils.copyProperties(ativoFinanceiroEncontrado, ativoFinanceiro);
+
+		return ativoFinanceiroRepository.save(ativoFinanceiroEncontrado);
+
 	}
-	
+
 	public String getInformacoesAtivoFromBovespaWebService(List<AtivoFinanceiro> ativosFinanceiros) throws IOException {
 		XmlMapper xmlMapper = new XmlMapper();
-		
-		
-		//Monta Lista de Ativos para URL
-		
+
+		// Monta Lista de Ativos para URL
+
 		String pipe = PIPE_SEPARATOR;
 		StringBuilder stringBuild = new StringBuilder(pipe);
 		for (AtivoFinanceiro ativoFinanceiro : ativosFinanceiros) {
 			stringBuild.append(ativoFinanceiro.getCodigo());
 			stringBuild.append(pipe);
 		}
-		
+
 		System.out.println(stringBuild);
-		
-		
+
 		StringBuffer sb = new StringBuffer();
-		
+
 		URL url = new URL("http://bvmf.bmfbovespa.com.br/cotacoes2000/FormConsultaCotacoes.asp?strListaCodigos=BCFF11");
 		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-		
+
 		String str;
-		
-		while((str = in.readLine()) != null) {
+
+		while ((str = in.readLine()) != null) {
 			sb.append(str);
 		}
-		
+
 		AtivoFinanceiroVO papelFinanceiroVO = xmlMapper.readValue(sb.toString(), AtivoFinanceiroVO.class);
-		
+
 		System.out.println("Papel Financeiro VO: " + papelFinanceiroVO.getNome());
-		
+
 		return null;
 	}
 
@@ -97,7 +98,7 @@ public class AtivoFinanceiroServiceImpl implements AtivoFinanceiroService {
 	public HashMap<String, BigDecimal> atualizarAtivosViaGoogleSheets() throws IOException, GeneralSecurityException {
 		sheetsService = SheetsServiceUtil.getSheetsService();
 		List<AtivoFinanceiro> ativosFinanceirosLista = ativoFinanceiroRepository.findAll();
-		
+
 		HashMap<String, BigDecimal> fiiHashMap = new HashMap<String, BigDecimal>();
 
 		List<String> codigosFIIsLista = Arrays.asList("A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10");
@@ -109,31 +110,93 @@ public class AtivoFinanceiroServiceImpl implements AtivoFinanceiroService {
 				.batchGet(SPREADSHEET_ID).setRanges(codigosAcoesLista).execute();
 
 		for (int i = 0; i < readResultValoresAtualizados.getValueRanges().size(); i++) {
-			
+
 			Object codigoAtivo = readResultCodigosAtivosLista.getValueRanges().get(i).getValues().get(0).get(0);
 			Object precoAtual = readResultValoresAtualizados.getValueRanges().get(i).getValues().get(0).get(0);
-			
+
 			for (AtivoFinanceiro ativoFinanceiro : ativosFinanceirosLista) {
-				if(ativoFinanceiro.getCodigo().equals(codigoAtivo)) {
+				if (ativoFinanceiro.getCodigo().equals(codigoAtivo)) {
 					Long idAtivoFinanceiro = ativoFinanceiro.getId();
 				}
 			}
-			
-			
-			String precoAtualizadoFormatado = precoAtual.toString().replace(",", "."); 
-			
+
+			String precoAtualizadoFormatado = precoAtual.toString().replace(",", ".");
+
 			fiiHashMap.put(codigoAtivo.toString(), new BigDecimal(precoAtualizadoFormatado));
 		}
-		
+
 		return fiiHashMap;
-		
+
 	}
 
 	@Override
 	public List<AtivoFinanceiro> pesquisar(AtivoFinanceiroRequestVO ativoFinanceiroRequestVO) {
 		Specification<AtivoFinanceiro> filter = AtivoFinanceiroSpecification.byFilter(ativoFinanceiroRequestVO);
-		
+
 		return this.ativoFinanceiroRepository.findAll(filter);
 	}
-	
+
+	@Override
+	public List<AtivoFinanceiro> getListaComCotacaoAtualDosAtivos(List<AtivoFinanceiro> ativosFinanceiros) throws IOException {
+
+ 		for (AtivoFinanceiro ativoFinanceiro : ativosFinanceiros) {
+			if (ativoFinanceiro.getCategoriaAtivo().getNome().equals("FIIs")) {
+				getCotacaoAtualFundosImobiliarios(ativoFinanceiro);
+				
+				BigDecimal porcentagem = calcularTotalEmPorcentagem(ativoFinanceiro);
+				
+				ativoFinanceiro.setTotalPorcentagem(porcentagem);
+				
+			}
+			
+			if (ativoFinanceiro.getCategoriaAtivo().getNome().equals("Ações")) {
+				getCotacaoAtualAcoes(ativoFinanceiro);
+				
+				BigDecimal porcentagem = calcularTotalEmPorcentagem(ativoFinanceiro);
+				
+				ativoFinanceiro.setTotalPorcentagem(porcentagem);
+				
+				ativoFinanceiro.setTotalPorcentagem(porcentagem);
+				
+			}
+		}
+
+		return ativosFinanceiros;
+	}
+
+	private BigDecimal calcularTotalEmPorcentagem(AtivoFinanceiro ativoFinanceiro) {
+		BigDecimal totalAplicadoEmDinheiroBruto = ativoFinanceiro.getPrecoAtual().multiply(new BigDecimal(ativoFinanceiro.getQuantidade()));
+		
+		BigDecimal diferencaEntreValorBrutoEValorAplicado = totalAplicadoEmDinheiroBruto.subtract(ativoFinanceiro.getTotalDinheiro());
+		BigDecimal porcentagem = diferencaEntreValorBrutoEValorAplicado
+				.divide(ativoFinanceiro.getTotalDinheiro(), 4, RoundingMode.HALF_UP)
+				.multiply(new BigDecimal(100)).setScale(2);
+		
+		
+		return porcentagem;
+	}
+
+	private void getCotacaoAtualAcoes(AtivoFinanceiro ativoFinanceiro) throws IOException {
+		String[] nomeDoAtivoSeparado = ativoFinanceiro.getNome().split(" ");
+		String primeiroNomeDoAtivo = nomeDoAtivoSeparado[0];
+		
+		String url = "https://www.infomoney.com.br/cotacoes/" + primeiroNomeDoAtivo + "-" + ativoFinanceiro.getCodigo();
+		Document document = Jsoup.connect(url).get();
+		String cotacaoAtual = document.body().select("div.value > p" /*css selector*/).get(0).text();
+		
+		converteCotacaoAtualToBigDecimal(ativoFinanceiro, cotacaoAtual);
+	}
+
+	private void getCotacaoAtualFundosImobiliarios(AtivoFinanceiro ativoFinanceiro) throws IOException {
+		String url = "https://www.infomoney.com.br/cotacoes/fundos-imobiliarios-" + ativoFinanceiro.getCodigo();
+		Document document = Jsoup.connect(url).get();
+		String cotacaoAtual = document.body().select("div.value > p" /*css selector*/).get(0).text();
+		
+		converteCotacaoAtualToBigDecimal(ativoFinanceiro, cotacaoAtual);
+	}
+
+	private void converteCotacaoAtualToBigDecimal(AtivoFinanceiro ativoFinanceiro, String cotacaoAtual) {
+		cotacaoAtual = cotacaoAtual.replace(",", ".");
+		ativoFinanceiro.setPrecoAtual(new BigDecimal(cotacaoAtual));
+	}
 }

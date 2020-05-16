@@ -1,9 +1,6 @@
 package com.brum.financexp.api.controller;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.security.GeneralSecurityException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,59 +44,82 @@ public class AtivoFinanceiroController {
 	@CrossOrigin(origins = "http://localhost:4200")
 	public ResponseEntity<AtivoFinanceiro> criar(@Valid @RequestBody AtivoFinanceiro ativoFinanceiro,
 			HttpServletResponse response) {
-		
+
 		AtivoFinanceiro ativoFinanceiroSalvo = ativoFinanceiroRepository.save(ativoFinanceiro);
 
 		log.info("Ativo Financeiro cadastrado com sucesso. Nome do Ativo: {}", ativoFinanceiroSalvo.getNome());
 		return ResponseEntity.status(HttpStatus.CREATED).body(ativoFinanceiroSalvo);
 	}
+	
+	@PutMapping
+	@CrossOrigin(origins = "http://localhost:4200")
+	public ResponseEntity<AtivoFinanceiro> atualizar(@PathVariable Long id, @Valid @RequestBody AtivoFinanceiro ativoFinanceiro) {
+		AtivoFinanceiro ativoSalvo = ativoFinanceiroService.atualizarAtivoFinanceiro(id, ativoFinanceiro);
+		
+		return ResponseEntity.ok(ativoSalvo);
+	}
 
 	@GetMapping
 	@CrossOrigin(origins = "http://localhost:4200")
-	public Page<AtivoFinanceiro> listar(Pageable pageable) {
-				
+	public List<AtivoFinanceiro> listar(Pageable pageable) {
+
 		log.info("Listando Ativos Financeiros.");
-		return ativoFinanceiroRepository.findByOrderByCodigoAsc(pageable);
+		List<AtivoFinanceiro> ativosFinanceirosList = ativoFinanceiroRepository.findByOrderByCodigoAsc();
+		
+		try {
+			ativosFinanceirosList = ativoFinanceiroService.getListaComCotacaoAtualDosAtivos(ativosFinanceirosList);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return ativosFinanceirosList;
 	}
-	
+
 	@GetMapping("/listar")
 	@CrossOrigin(origins = "http://localhost:4200")
 	public List<AtivoFinanceiro> listarAtivos() {
-				
+
 		log.info("Listando todos os ativos financeiros existentes no sistema.");
-		return ativoFinanceiroRepository.findByOrderByCodigoAsc();
+		List<AtivoFinanceiro> ativosFinanceirosList = ativoFinanceiroRepository.findByOrderByCodigoAsc();
+		
+		
+		
+		return ativosFinanceirosList;
 	}
 
-	@GetMapping("/preco-atual")
-	public HashMap<String, BigDecimal> buscaPrecoAtualDosAtivos() throws IOException, GeneralSecurityException {
-
-		HashMap<String, BigDecimal> ativos = ativoFinanceiroService.atualizarAtivosViaGoogleSheets();
-
-		return ativos;
-	}
+//	@GetMapping("/preco-atual")
+//	public HashMap<String, BigDecimal> buscaPrecoAtualDosAtivos() throws IOException, GeneralSecurityException {
+//
+//		HashMap<String, BigDecimal> ativos = ativoFinanceiroService.atualizarAtivosViaGoogleSheets();
+//
+//		return ativos;
+//	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<AtivoFinanceiro> findById(@PathVariable Long id) {
 		Optional<AtivoFinanceiro> ativoFinanceiro = ativoFinanceiroRepository.findById(id);
 
-		return ativoFinanceiro.isPresent() ? ResponseEntity.ok(ativoFinanceiro.get()): ResponseEntity.notFound().build();
+		return ativoFinanceiro.isPresent() ? ResponseEntity.ok(ativoFinanceiro.get())
+				: ResponseEntity.notFound().build();
 	}
 
-	@PutMapping
-	@CrossOrigin(origins = "http://localhost:4200")
-	public String atualizarAtivos() {
-		List<AtivoFinanceiro> ativosFinanceirosLista = ativoFinanceiroRepository.findAll();
-
-		try {
-			ativoFinanceiroService.getInformacoesAtivoFromBovespaWebService(ativosFinanceirosLista);
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-
-		return null;
-
-	}
+//	@PutMapping
+//	@CrossOrigin(origins = "http://localhost:4200")
+//	public String atualizarAtivos() {
+//		List<AtivoFinanceiro> ativosFinanceirosLista = ativoFinanceiroRepository.findAll();
+//
+//		try {
+//			ativoFinanceiroService.getInformacoesAtivoFromBovespaWebService(ativosFinanceirosLista);
+//		} catch (IOException e) {
+//
+//			e.printStackTrace();
+//		}
+//
+//		return null;
+//
+//	}
 
 	@PutMapping("/google-sheets")
 	public void atualizarAtivosViaGoogleSheets() {
@@ -112,9 +131,9 @@ public class AtivoFinanceiroController {
 	@CrossOrigin(origins = "http://localhost:4200")
 	public void excluir(@PathVariable Long id) {
 		ativoFinanceiroRepository.deleteById(id);
-		
+
 		log.info("Ativo financeiro excluído com sucesso. Id do Ativo: {}", id);
-		
+
 	}
 
 	@PostMapping("/pesquisar")

@@ -43,11 +43,6 @@ public class AporteController {
 	@Autowired
 	private AtivoFinanceiroService ativoFinanceiroService;
 
-	private String buscaPrecoAtualDoAtivo(String codigoAtivo) throws Exception {
-		String valorAcao = aporteService.buscaInformacoesSobreAtivoNoWebService();
-
-		return valorAcao;
-	}
 
 	@PostMapping
 	@CrossOrigin(origins = "http://localhost:4200")
