@@ -45,12 +45,6 @@ public class RequestLogger implements Filter {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode headers = objectMapper.createObjectNode();
         
-        Enumeration<String> headerEnumeration = httpServletRequest.getHeaderNames();
-        while (headerEnumeration.hasMoreElements()) {
-            String name = headerEnumeration.nextElement();
-            headers.set(name, objectMapper.convertValue(httpServletRequest.getHeader(name), JsonNode.class));
-        };
-
         log.info(REQUEST_SESSION, httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), httpServletRequest.getSession().getId(), headers.toString());
         
         chain.doFilter(request, response);
