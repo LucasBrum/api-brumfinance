@@ -89,14 +89,6 @@ public class AtivoFinanceiroController {
 		return ativosFinanceirosList;
 	}
 
-//	@GetMapping("/preco-atual")
-//	public HashMap<String, BigDecimal> buscaPrecoAtualDosAtivos() throws IOException, GeneralSecurityException {
-//
-//		HashMap<String, BigDecimal> ativos = ativoFinanceiroService.atualizarAtivosViaGoogleSheets();
-//
-//		return ativos;
-//	}
-
 	@GetMapping("/{id}")
 	public ResponseEntity<AtivoFinanceiro> findById(@PathVariable Long id) {
 		Optional<AtivoFinanceiro> ativoFinanceiro = ativoFinanceiroRepository.findById(id);
@@ -104,22 +96,6 @@ public class AtivoFinanceiroController {
 		return ativoFinanceiro.isPresent() ? ResponseEntity.ok(ativoFinanceiro.get())
 				: ResponseEntity.notFound().build();
 	}
-
-//	@PutMapping
-//	@CrossOrigin(origins = "http://localhost:4200")
-//	public String atualizarAtivos() {
-//		List<AtivoFinanceiro> ativosFinanceirosLista = ativoFinanceiroRepository.findAll();
-//
-//		try {
-//			ativoFinanceiroService.getInformacoesAtivoFromBovespaWebService(ativosFinanceirosLista);
-//		} catch (IOException e) {
-//
-//			e.printStackTrace();
-//		}
-//
-//		return null;
-//
-//	}
 
 	@PutMapping("/google-sheets")
 	public void atualizarAtivosViaGoogleSheets() {
