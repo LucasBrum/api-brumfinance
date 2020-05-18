@@ -26,6 +26,7 @@ import com.brum.financexp.api.model.AtivoFinanceiro;
 import com.brum.financexp.api.repository.AtivoFinanceiroRepository;
 import com.brum.financexp.api.service.AtivoFinanceiroService;
 import com.brum.financexp.api.vo.AtivoFinanceiroRequestVO;
+import com.brum.financexp.api.vo.IndiceBovespaVO;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -58,7 +59,14 @@ public class AtivoFinanceiroController {
 		
 		return ResponseEntity.ok(ativoSalvo);
 	}
-
+	
+	@GetMapping("cotacao/ibovespa")
+	@CrossOrigin(origins = "http://localhost:4200")
+	public IndiceBovespaVO getInfoIndiceBovespa() throws IOException {
+		
+		return ativoFinanceiroService.getInfoIndiceBovespaOnline();
+	}
+	
 	@GetMapping
 	@CrossOrigin(origins = "http://localhost:4200")
 	public List<AtivoFinanceiro> listar(Pageable pageable) {

@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import com.brum.financexp.api.model.AtivoFinanceiro;
 import com.brum.financexp.api.vo.AtivoFinanceiroRequestVO;
+import com.brum.financexp.api.vo.IndiceBovespaVO;
 
 public interface AtivoFinanceiroService {
 
@@ -18,6 +19,8 @@ public interface AtivoFinanceiroService {
 	HashMap<String, BigDecimal> atualizarAtivosViaGoogleSheets() throws IOException, GeneralSecurityException;
 	
 	String getInformacoesAtivoFromBovespaWebService(List<AtivoFinanceiro> ativosFinanceiros) throws IOException;
+	
+	IndiceBovespaVO getInfoIndiceBovespaOnline() throws IOException;
 
 	List<AtivoFinanceiro> pesquisar(AtivoFinanceiroRequestVO filter);
 	List<AtivoFinanceiro> getListaComCotacaoAtualDosAtivos(List<AtivoFinanceiro> ativosFinanceiros) throws IOException;

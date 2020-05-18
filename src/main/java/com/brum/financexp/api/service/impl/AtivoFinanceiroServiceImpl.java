@@ -27,6 +27,7 @@ import com.brum.financexp.api.service.AtivoFinanceiroService;
 import com.brum.financexp.api.util.google.SheetsServiceUtil;
 import com.brum.financexp.api.vo.AtivoFinanceiroRequestVO;
 import com.brum.financexp.api.vo.AtivoFinanceiroVO;
+import com.brum.financexp.api.vo.IndiceBovespaVO;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.BatchGetValuesResponse;
@@ -128,6 +129,25 @@ public class AtivoFinanceiroServiceImpl implements AtivoFinanceiroService {
 		return fiiHashMap;
 
 	}
+	
+	@Override
+	public IndiceBovespaVO getInfoIndiceBovespaOnline() throws IOException {
+		
+		String url = "https://www.infomoney.com.br/cotacoes/ibovespa";
+		Document document = Jsoup.connect(url).get();
+		String pontos = document.body().select("div.value > p" /*css selector*/).get(0).text() + " Pontos";
+		String porcentagem = document.body().select("div.percentage > p" /*css selector*/).get(0).text();
+		String minimo = document.body().select("div.minimo > p" /*css selector*/).get(0).text();
+		String maximo = document.body().select("div.maximo > p" /*css selector*/).get(0).text();
+		
+		IndiceBovespaVO indiceBovespaVO = new IndiceBovespaVO();
+		indiceBovespaVO.setPontos(pontos);
+		indiceBovespaVO.setVariacaoDia(porcentagem);
+		indiceBovespaVO.setMinDia(minimo);
+		indiceBovespaVO.setMaxDia(maximo);
+		
+		return indiceBovespaVO;
+	}
 
 	@Override
 	public List<AtivoFinanceiro> pesquisar(AtivoFinanceiroRequestVO ativoFinanceiroRequestVO) {
@@ -199,4 +219,6 @@ public class AtivoFinanceiroServiceImpl implements AtivoFinanceiroService {
 		cotacaoAtual = cotacaoAtual.replace(",", ".");
 		ativoFinanceiro.setPrecoAtual(new BigDecimal(cotacaoAtual));
 	}
+
+	
 }
