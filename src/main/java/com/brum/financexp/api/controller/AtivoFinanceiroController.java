@@ -52,7 +52,7 @@ public class AtivoFinanceiroController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(ativoFinanceiroSalvo);
 	}
 	
-	@PutMapping
+	@PutMapping("/{id}")
 	@CrossOrigin(origins = "http://localhost:4200")
 	public ResponseEntity<AtivoFinanceiro> atualizar(@PathVariable Long id, @Valid @RequestBody AtivoFinanceiro ativoFinanceiro) {
 		AtivoFinanceiro ativoSalvo = ativoFinanceiroService.atualizarAtivoFinanceiro(id, ativoFinanceiro);
@@ -98,6 +98,7 @@ public class AtivoFinanceiroController {
 	}
 
 	@GetMapping("/{id}")
+	@CrossOrigin(origins = "http://localhost:4200")
 	public ResponseEntity<AtivoFinanceiro> findById(@PathVariable Long id) {
 		Optional<AtivoFinanceiro> ativoFinanceiro = ativoFinanceiroRepository.findById(id);
 

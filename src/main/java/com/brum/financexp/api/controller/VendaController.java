@@ -45,15 +45,12 @@ public class VendaController {
 		log.info("Venda de Ativo {} efetuada com sucesso.", venda.getAtivo());
 		return ResponseEntity.status(HttpStatus.CREATED).body(vendaSalva);
 	}
-
-	
 	
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@CrossOrigin(origins = "http://localhost:4200")
 	public void excluir(@PathVariable Long id) {
 		vendaRepository.deleteById(id);
-		
 		log.info("Venda excluída com sucesso.");
 
 	}
@@ -62,8 +59,7 @@ public class VendaController {
 	@CrossOrigin(origins = "http://localhost:4200")
 	public Page<Venda> listar(Pageable pageable) {
 		
-		log.info("Listando Aportes.");
-		
+		log.info("Listando Vendas.");
 		return vendaRepository.findByOrderByDataVendaAsc(pageable);
 	}
 

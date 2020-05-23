@@ -1,7 +1,6 @@
 package com.brum.financexp.api.config;
 
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.UUID;
 
 import javax.servlet.Filter;
@@ -17,7 +16,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.brum.financexp.api.util.RequestUtil;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 

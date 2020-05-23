@@ -5,8 +5,6 @@ import java.util.Optional;
 
 import com.brum.financexp.api.model.Aporte;
 import com.brum.financexp.api.model.AtivoFinanceiro;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 public interface AporteService {
 
