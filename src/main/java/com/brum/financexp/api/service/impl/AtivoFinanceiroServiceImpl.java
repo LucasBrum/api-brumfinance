@@ -21,6 +21,10 @@ import com.brum.financexp.api.service.AtivoFinanceiroService;
 import com.brum.financexp.api.vo.AtivoFinanceiroRequestVO;
 import com.brum.financexp.api.vo.IndiceBovespaVO;
 
+import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
+
+@Log4j2
 @Service
 public class AtivoFinanceiroServiceImpl implements AtivoFinanceiroService {
 
@@ -77,6 +81,7 @@ public class AtivoFinanceiroServiceImpl implements AtivoFinanceiroService {
 	public List<AtivoFinanceiro> getListaComCotacaoAtualDosAtivos(List<AtivoFinanceiro> ativosFinanceiros) throws IOException {
 
  		for (AtivoFinanceiro ativoFinanceiro : ativosFinanceiros) {
+ 			log.info("Buscando informações do Ativo: {}", ativoFinanceiro.getCodigo());
 			if (ativoFinanceiro.getCategoriaAtivo().getNome().equals("FIIs")) {
 				getCotacaoAtualFundosImobiliarios(ativoFinanceiro);
 				
