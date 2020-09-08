@@ -22,7 +22,6 @@ import com.brum.financexp.api.vo.AtivoFinanceiroRequestVO;
 import com.brum.financexp.api.vo.IndiceBovespaVO;
 
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 
 @Log4j2
 @Service
@@ -122,7 +121,7 @@ public class AtivoFinanceiroServiceImpl implements AtivoFinanceiroService {
 		String[] nomeDoAtivoSeparado = ativoFinanceiro.getNome().split(" ");
 		String primeiroNomeDoAtivo = nomeDoAtivoSeparado[0].toLowerCase();
 		
-		String url = "https://www.infomoney.com.br/cotacoes/" + primeiroNomeDoAtivo + "-" + ativoFinanceiro.getCodigo().toLowerCase();
+		String url = "https://www.infomoney.com.br/cotacoes/" + primeiroNomeDoAtivo + "-" + ativoFinanceiro.getCodigo().toLowerCase() + "";
 		Document document = Jsoup.connect(url).get();
 		String cotacaoAtual = document.body().select("div.value > p" /*css selector*/).get(0).text();
 		
@@ -130,7 +129,7 @@ public class AtivoFinanceiroServiceImpl implements AtivoFinanceiroService {
 	}
 
 	private void getCotacaoAtualFundosImobiliarios(AtivoFinanceiro ativoFinanceiro) throws IOException {
-		String url = "https://www.infomoney.com.br/cotacoes/fundos-imobiliarios-" + ativoFinanceiro.getCodigo();
+		String url = "https://www.infomoney.com.br/cotacoes/fundos-imobiliarios-" + ativoFinanceiro.getCodigo() + "/grafico/";
 		Document document = Jsoup.connect(url).get();
 		String cotacaoAtual = document.body().select("div.value > p" /*css selector*/).get(0).text();
 		

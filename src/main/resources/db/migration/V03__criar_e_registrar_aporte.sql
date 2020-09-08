@@ -7,4 +7,5 @@ CREATE TABLE aporte (
 	custo DECIMAL(10,2) NOT NULL,	
 	valor_total DECIMAL(10,2),
 	FOREIGN KEY (id_ativo_financeiro) REFERENCES ativo_financeiro(id)
+    ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
