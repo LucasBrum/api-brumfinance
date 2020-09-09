@@ -43,8 +43,7 @@ public class AtivoFinanceiroController {
 
 	@PostMapping
 	@CrossOrigin(origins = "http://localhost:4200")
-	public ResponseEntity<AtivoFinanceiro> criar(@Valid @RequestBody AtivoFinanceiro ativoFinanceiro,
-			HttpServletResponse response) {
+	public ResponseEntity<AtivoFinanceiro> criar(@Valid @RequestBody AtivoFinanceiro ativoFinanceiro, HttpServletResponse response) {
 
 		AtivoFinanceiro ativoFinanceiroSalvo = ativoFinanceiroRepository.save(ativoFinanceiro);
 
@@ -74,14 +73,6 @@ public class AtivoFinanceiroController {
 		log.info("Listando Ativos Financeiros.");
 		List<AtivoFinanceiro> ativosFinanceirosList = ativoFinanceiroRepository.findByOrderByCodigoAsc();
 		
-		try {
-			ativosFinanceirosList = ativoFinanceiroService.getListaComCotacaoAtualDosAtivos(ativosFinanceirosList);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
 		return ativosFinanceirosList;
 	}
 
@@ -91,8 +82,6 @@ public class AtivoFinanceiroController {
 
 		log.info("Listando todos os ativos financeiros existentes no sistema.");
 		List<AtivoFinanceiro> ativosFinanceirosList = ativoFinanceiroRepository.findByOrderByCodigoAsc();
-		
-		
 		
 		return ativosFinanceirosList;
 	}
@@ -129,6 +118,23 @@ public class AtivoFinanceiroController {
 
 		return new ResponseEntity<>(ativoFinanceiroList, HttpStatus.OK);
 
+	}
+	
+	@GetMapping("/atualizar-infos-ativos")
+	@CrossOrigin(origins = "http://localhost:4200")
+	public List<AtivoFinanceiro>  atualizarInfoAtivos() {
+		log.info("Buscando Ativos Financeiros.");
+		List<AtivoFinanceiro> ativosFinanceirosList = ativoFinanceiroRepository.findByOrderByCodigoAsc();
+		
+		try {
+			ativosFinanceirosList = ativoFinanceiroService.getListaComCotacaoAtualDosAtivos(ativosFinanceirosList);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return ativosFinanceirosList;
+		
 	}
 
 }

@@ -1,7 +1,7 @@
 package com.brum.financexp.api.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,7 +43,7 @@ public class AtivoFinanceiro {
 	private BigDecimal totalPorcentagem;
 	
 	@Column(name = "data_atualizacao")
-	private LocalDate dataAtualizacao;
+	private LocalDateTime dataAtualizacao;
 	
 	private Integer quantidade;
 	

@@ -49,8 +49,7 @@ public class AporteController {
 	@CrossOrigin(origins = "http://localhost:4200")
 	public ResponseEntity<Aporte> criar(@Valid @RequestBody Aporte aporte, HttpServletResponse response) {
 
-		Optional<AtivoFinanceiro> ativoFinanceiro = ativoFinanceiroService
-				.findById(aporte.getAtivoFinanceiro().getId());
+		Optional<AtivoFinanceiro> ativoFinanceiro = ativoFinanceiroService.findById(aporte.getAtivoFinanceiro().getId());
 
 		if (ativoFinanceiro.isPresent()) {
 
