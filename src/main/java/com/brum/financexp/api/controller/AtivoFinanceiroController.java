@@ -69,7 +69,6 @@ public class AtivoFinanceiroController {
 	@GetMapping
 	@CrossOrigin(origins = "http://localhost:4200")
 	public List<AtivoFinanceiro> listar(Pageable pageable) {
-
 		log.info("Listando Ativos Financeiros.");
 		List<AtivoFinanceiro> ativosFinanceirosList = ativoFinanceiroRepository.findByOrderByCodigoAsc();
 		
