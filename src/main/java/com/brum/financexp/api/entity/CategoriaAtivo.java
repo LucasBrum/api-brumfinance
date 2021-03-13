@@ -1,4 +1,4 @@
-package com.brum.financexp.api.model;
+package com.brum.financexp.api.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

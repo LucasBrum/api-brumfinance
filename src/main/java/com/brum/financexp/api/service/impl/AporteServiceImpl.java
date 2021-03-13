@@ -3,12 +3,16 @@ package com.brum.financexp.api.service.impl;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.brum.financexp.api.model.Aporte;
-import com.brum.financexp.api.model.AtivoFinanceiro;
+import com.brum.financexp.api.dto.AporteDto;
+import com.brum.financexp.api.entity.Aporte;
+import com.brum.financexp.api.entity.AtivoFinanceiro;
+import com.brum.financexp.api.repository.AporteRepository;
 import com.brum.financexp.api.service.AporteService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -17,6 +21,17 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Service
 public class AporteServiceImpl implements AporteService{
+	
+	private ModelMapper mapper;
+	
+	@Autowired
+	private AporteRepository aporteRepository;
+	
+	@Autowired
+	public AporteServiceImpl(AporteRepository aporteRepository) {
+		this.mapper = new ModelMapper();
+		this.aporteRepository = aporteRepository;
+	}
 
 	public String buscaInformacoesSobreAtivoNoWebService() throws JsonProcessingException, JsonMappingException {
 		RestTemplate restTemplate = new RestTemplate();
@@ -50,7 +65,7 @@ public class AporteServiceImpl implements AporteService{
 		return valorJaInvestido;
 	}
 	
-	public void atualizaTotalInvestidoNoAtivo(Aporte aporte, Optional<AtivoFinanceiro> ativoFinanceiro, BigDecimal valorJaInvestido) {
+	public void atualizaTotalInvestidoNoAtivo(AporteDto aporte, Optional<AtivoFinanceiro> ativoFinanceiro, BigDecimal valorJaInvestido) {
 		BigDecimal valorTotalDoAporte = calculaValorTotalDoAporte(aporte.getCusto(), aporte.getQuantidade());
 		aporte.setValorTotal(valorTotalDoAporte);
 
@@ -59,7 +74,7 @@ public class AporteServiceImpl implements AporteService{
 		ativoFinanceiro.get().setTotalDinheiro(valorInvestidoAtualizado);
 	}
 	
-	public void atualizaQuantidadeDoAtivo(Aporte aporte, Optional<AtivoFinanceiro> ativoFinanceiro) {
+	public void atualizaQuantidadeDoAtivo(AporteDto aporte, Optional<AtivoFinanceiro> ativoFinanceiro) {
 		if(ativoFinanceiro.get().getQuantidade() == null) {
 			ativoFinanceiro.get().setQuantidade(0);
 		}
@@ -67,5 +82,13 @@ public class AporteServiceImpl implements AporteService{
 		Integer quantidadeDoAtivo = ativoFinanceiro.get().getQuantidade();
 		quantidadeDoAtivo = quantidadeDoAtivo + aporte.getQuantidade();
 		ativoFinanceiro.get().setQuantidade(quantidadeDoAtivo);
+	}
+
+	@Override
+	public Aporte criar(AporteDto aporteDto) {
+		
+		Aporte aporte = this.mapper.map(aporteDto, Aporte.class);
+		
+		return aporteRepository.save(aporte);
 	}
 }

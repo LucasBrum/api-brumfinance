@@ -2,7 +2,7 @@ package com.brum.financexp.api.data;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.brum.financexp.api.model.AtivoFinanceiro;
+import com.brum.financexp.api.entity.AtivoFinanceiro;
 
 public interface Specifications {
 	

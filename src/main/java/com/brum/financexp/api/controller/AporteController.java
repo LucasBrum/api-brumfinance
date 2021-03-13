@@ -3,7 +3,6 @@ package com.brum.financexp.api.controller;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.brum.financexp.api.model.Aporte;
-import com.brum.financexp.api.model.AtivoFinanceiro;
+import com.brum.financexp.api.dto.AporteDto;
+import com.brum.financexp.api.entity.Aporte;
+import com.brum.financexp.api.entity.AtivoFinanceiro;
 import com.brum.financexp.api.repository.AporteRepository;
 import com.brum.financexp.api.service.AporteService;
 import com.brum.financexp.api.service.AtivoFinanceiroService;
@@ -46,7 +46,7 @@ public class AporteController {
 
 	@PostMapping
 	@CrossOrigin(origins = "http://localhost:4200")
-	public ResponseEntity<Aporte> criar(@Valid @RequestBody Aporte aporte, HttpServletResponse response) {
+	public ResponseEntity<Aporte> criar(@Valid @RequestBody AporteDto aporte) {
 
 		Optional<AtivoFinanceiro> ativoFinanceiro = ativoFinanceiroService.findById(aporte.getAtivoFinanceiro().getId());
 
@@ -59,10 +59,8 @@ public class AporteController {
 			ativoFinanceiroService.atualizarAtivoFinanceiro(aporte.getAtivoFinanceiro().getId(), ativoFinanceiro.get());
 
 		}
-
-		Aporte aporteSalvo = aporteRepository.save(aporte);
-
-		return ResponseEntity.status(HttpStatus.CREATED).body(aporteSalvo);
+		
+		return new ResponseEntity<>(aporteService.criar(aporte), HttpStatus.CREATED);
 
 	}
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.brum.financexp.api.model.CategoriaAtivo;
+import com.brum.financexp.api.entity.CategoriaAtivo;
 import com.brum.financexp.api.service.CategoriaAtivoService;
 
 @RestController

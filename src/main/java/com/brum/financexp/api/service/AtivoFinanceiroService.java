@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import com.brum.financexp.api.model.AtivoFinanceiro;
+import com.brum.financexp.api.entity.AtivoFinanceiro;
 import com.brum.financexp.api.vo.AtivoFinanceiroRequestVO;
 import com.brum.financexp.api.vo.IndiceBovespaVO;
 

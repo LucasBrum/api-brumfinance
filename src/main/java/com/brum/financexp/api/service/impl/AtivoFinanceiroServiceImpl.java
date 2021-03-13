@@ -16,7 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.brum.financexp.api.data.AtivoFinanceiroSpecification;
-import com.brum.financexp.api.model.AtivoFinanceiro;
+import com.brum.financexp.api.entity.AtivoFinanceiro;
 import com.brum.financexp.api.repository.AtivoFinanceiroRepository;
 import com.brum.financexp.api.service.AtivoFinanceiroService;
 import com.brum.financexp.api.vo.AtivoFinanceiroRequestVO;

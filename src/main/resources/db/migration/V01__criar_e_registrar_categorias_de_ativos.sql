@@ -9,3 +9,4 @@ INSERT INTO categoria_ativo(nome, tipo) VALUES ('FIIs', 'Renda Variável');
 INSERT INTO categoria_ativo(nome, tipo) VALUES ('Tesouro Direto', 'Renda Fixa');
 INSERT INTO categoria_ativo(nome, tipo) VALUES ('ETF', 'Renda Variável');
 INSERT INTO categoria_ativo(nome, tipo) VALUES ('Renda Fixa', 'Renda Fixa');
+INSERT INTO categoria_ativo(nome, tipo) VALUES ('Bitcoin', 'Renda Variável');

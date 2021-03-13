@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AtivoFinanceiroVO implements Serializable {
+public class AtivoFinanceiroDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

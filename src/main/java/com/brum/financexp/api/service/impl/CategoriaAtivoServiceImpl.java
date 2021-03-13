@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.brum.financexp.api.model.CategoriaAtivo;
+import com.brum.financexp.api.entity.CategoriaAtivo;
 import com.brum.financexp.api.repository.CategoriaAtivoRepository;
 import com.brum.financexp.api.service.CategoriaAtivoService;
 

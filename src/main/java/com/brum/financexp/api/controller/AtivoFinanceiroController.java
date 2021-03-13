@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.brum.financexp.api.model.AtivoFinanceiro;
+import com.brum.financexp.api.entity.AtivoFinanceiro;
 import com.brum.financexp.api.repository.AtivoFinanceiroRepository;
 import com.brum.financexp.api.service.AtivoFinanceiroService;
 import com.brum.financexp.api.vo.AtivoFinanceiroRequestVO;

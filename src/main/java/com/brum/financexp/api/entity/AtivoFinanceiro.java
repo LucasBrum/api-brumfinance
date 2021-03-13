@@ -1,4 +1,4 @@
-package com.brum.financexp.api.model;
+package com.brum.financexp.api.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
