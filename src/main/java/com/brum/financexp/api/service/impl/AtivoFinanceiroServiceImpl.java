@@ -126,12 +126,10 @@ public class AtivoFinanceiroServiceImpl implements AtivoFinanceiroService {
 	}
 
 	private void getCotacaoAtualAcoes(AtivoFinanceiro ativoFinanceiro) throws IOException {
-		String[] nomeDoAtivoSeparado = ativoFinanceiro.getNome().split(" ");
-		String primeiroNomeDoAtivo = nomeDoAtivoSeparado[0].toLowerCase();
-		
-		String url = "https://www.infomoney.com.br/cotacoes/" + primeiroNomeDoAtivo + "-" + ativoFinanceiro.getCodigo().toLowerCase() + "";
+
+		String url = "https://statusinvest.com.br/acoes/" + ativoFinanceiro.getCodigo().toLowerCase() + "";
 		Document document = Jsoup.connect(url).get();
-		String cotacaoAtual = document.body().select("div.value > p" /*css selector*/).get(0).text();
+		String cotacaoAtual = document.body().getElementsByClass("value").get(0).text();
 		
 		converteCotacaoAtualToBigDecimal(ativoFinanceiro, cotacaoAtual);
 	}
